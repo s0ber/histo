@@ -12,7 +12,7 @@ Let's say you have a widget, and this widget will push it's state to history, yo
 widget = Histo.addWidget({id: 'my_widget'})
 ```
 
-### Widget class
+## Widget class
 
 Instance of Histo.Widget class will be return, this instance will have some methods for dealing with history. Here they are.
 

@@ -26,4 +26,4 @@ Will push new state. As in usual history API.
 
 ### onPopState(callback)
 
-Will add pop state callbacks for a widget. Those callbacks will be called, when state for the current widget will be changed.
+Will add pop state callbacks for a widget. Those callbacks will be called, when state for the current widget will be changed. State data for the widget will be provided as the only argument.

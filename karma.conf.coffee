@@ -14,7 +14,10 @@ sourceFiles = karmaCliData.sourceFiles
 specFiles = fixtureFiles
   .concat(vendorFiles)
   .concat(sourceFiles)
-  .concat(['spec/**/*_spec.coffee'])
+  .concat([
+    'spec/stubs/*.coffee'
+    'spec/**/*_spec.coffee'
+  ])
 
 module.exports = (config) ->
   config.set

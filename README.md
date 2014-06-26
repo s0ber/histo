@@ -6,7 +6,7 @@ Histo.js is a small library, which allows different widgets to register it's own
 
 ## Usage
 
-Let's say you have a widget, and this widget will push it's state to history, you can register history API support for this widget like this.
+Let's say you have a widget, and this widget will push it's states to history, you can register history API support for this widget in a very simple way.
 
 ```
 widget = Histo.addWidget({id: 'my_widget'})

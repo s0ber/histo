@@ -52,7 +52,7 @@ describe 'AsyncFn', ->
       @dfd.resolve().then =>
         expect(@asyncFn.callback).to.be.calledOnce
 
-  describe 'integration testing', ->
+  describe '.newQueueFn', ->
     it 'calls callbacks in a queue one by one', (done) ->
       asyncFn1 = sinon.spy(=>
         dfd = new $.Deferred()
@@ -78,14 +78,9 @@ describe 'AsyncFn', ->
         dfd.promise()
       )
 
-      async1 = new AsyncFn(asyncFn1)
-      async2 = new AsyncFn(asyncFn2)
-      async3 = new AsyncFn(asyncFn3)
-
-      async1.done => async2.call()
-      async2.done => async3.call()
-
-      async1.call()
+      AsyncFn.addToCallQueue asyncFn1
+      AsyncFn.addToCallQueue asyncFn2
+      AsyncFn.addToCallQueue asyncFn3
 
       setTimeout ->
         expect(asyncFn1).to.be.calledOnce

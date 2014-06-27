@@ -1,5 +1,15 @@
 class AsyncFn
 
+  @addToCallQueue: (fn) ->
+    asyncFn = new AsyncFn(fn)
+
+    if @currentFn?
+      @currentFn.done => asyncFn.call()
+    else
+      asyncFn.call()
+
+    @currentFn = asyncFn
+
   constructor: (asyncFn) ->
     @fn = asyncFn
 

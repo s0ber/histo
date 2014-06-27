@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "histo",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Sergey Shishkalov <sergeyshishkalov@gmail.com>",
   "description": "Library, which allows different widgets to register it's own history events handlers, which won't be conflicting with each others",
   "devDependencies": {

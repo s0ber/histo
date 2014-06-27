@@ -1,7 +1,7 @@
-/*! histo (v0.1.0),
+/*! histo (v0.1.1),
  Library, which allows different widgets to register it's own history events handlers, which won't be conflicting with each others,
  by Sergey Shishkalov <sergeyshishkalov@gmail.com>
- Thu Jun 26 2014 */
+ Sat Jun 28 2014 */
 (function() {
   var modules;
 
@@ -62,6 +62,9 @@
 
     _Class.supplementState = function(options) {
       var curStateId, id, state, widgetState, _ref;
+      if (this.isPopping) {
+        return;
+      }
       id = options.id, widgetState = options.widgetState;
       state = this._history().state || {};
       widgetState.state_id = (curStateId = (_ref = state[id]) != null ? _ref.state_id : void 0) != null ? curStateId : 0;
@@ -83,15 +86,27 @@
     };
 
     _Class.onPopState = function(state) {
-      var id, widget, widgetState;
+      var id, path, widgetState;
       id = this._getChangedWidgetId(state);
       if (id == null) {
         return;
       }
-      widget = this.widgets[id];
       widgetState = state[id];
+      path = location.href;
       this.saveCurrentState(state);
-      return widget.callCallbacks(widgetState);
+      return this._asyncFn().addToCallQueue((function(_this) {
+        return function() {
+          var dfd, widget;
+          _this.isPopping = true;
+          dfd = new $.Deferred();
+          dfd.done(function() {
+            return _this.isPopping = false;
+          });
+          widget = _this.widgets[id];
+          widget.callCallback(widgetState, path, dfd);
+          return dfd.promise();
+        };
+      })(this));
     };
 
     _Class._getChangedWidgetId = function(newState) {
@@ -116,6 +131,10 @@
 
     _Class._launcher = function() {
       return this.__launcher != null ? this.__launcher : this.__launcher = modula.require('histo/launcher');
+    };
+
+    _Class._asyncFn = function() {
+      return this.__asyncFn != null ? this.__asyncFn : this.__asyncFn = modula.require('histo/async_fn');
     };
 
     _Class._history = function() {
@@ -210,22 +229,17 @@
         return;
       }
       this.id = options.id;
-      this.poppedStateCallbacks = [];
+      this.poppedStateCallback = null;
     }
 
     Widget.prototype.onPopState = function(callback) {
-      return this.poppedStateCallbacks.push(callback);
+      return this.poppedStateCallback = callback;
     };
 
-    Widget.prototype.callCallbacks = function(stateData) {
-      var callback, _i, _len, _ref, _results;
-      _ref = this.poppedStateCallbacks;
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        callback = _ref[_i];
-        _results.push(callback(stateData));
+    Widget.prototype.callCallback = function(stateData, path, dfd) {
+      if (this.poppedStateCallback != null) {
+        return this.poppedStateCallback(stateData, path, dfd);
       }
-      return _results;
     };
 
     Widget.prototype.replaceInitialState = function(state) {
@@ -247,5 +261,57 @@
   })();
 
   modula["export"]('histo/widget', Widget);
+
+}).call(this);
+
+(function() {
+  var AsyncFn;
+
+  AsyncFn = (function() {
+    AsyncFn.addToCallQueue = function(fn) {
+      var asyncFn;
+      asyncFn = new AsyncFn(fn);
+      if (this.currentFn != null) {
+        this.currentFn.done((function(_this) {
+          return function() {
+            return asyncFn.call();
+          };
+        })(this));
+      } else {
+        asyncFn.call();
+      }
+      return this.currentFn = asyncFn;
+    };
+
+    function AsyncFn(asyncFn) {
+      this.fn = asyncFn;
+    }
+
+    AsyncFn.prototype.done = function(callback) {
+      this.callback = callback;
+      if (this.isCalled) {
+        return this.callback();
+      }
+    };
+
+    AsyncFn.prototype.call = function() {
+      if (this.isCalled) {
+        return;
+      }
+      return this.fn().done((function(_this) {
+        return function() {
+          _this.isCalled = true;
+          if (_this.callback) {
+            return _this.callback();
+          }
+        };
+      })(this));
+    };
+
+    return AsyncFn;
+
+  })();
+
+  modula["export"]('histo/async_fn', AsyncFn);
 
 }).call(this);

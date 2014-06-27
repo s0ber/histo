@@ -4,48 +4,28 @@ describe 'Widget', ->
 
   beforeEach ->
     @widget = new Widget id: 'my_widget'
-
     @callback = sinon.spy()
-    @secondCallback = sinon.spy()
-    @thirdCallback = sinon.spy()
 
   describe '#contructor', ->
     it 'saves provided id in @id', ->
       expect(@widget.id).to.be.eql 'my_widget'
 
-    it 'creates empty list for @poppedStateCallbacks', ->
-      expect(@widget.poppedStateCallbacks).to.be.eql []
-
   describe '#onPopState', ->
-    it 'saves provided callback in @poppedStateCallbacks', ->
+    it 'saves provided callback in @poppedStateCallback', ->
       @widget.onPopState(@callback)
-      @widget.onPopState(@secondCallback)
-      @widget.onPopState(@thirdCallback)
-      expect(@widget.poppedStateCallbacks).to.be.eql [@callback, @secondCallback, @thirdCallback]
+      expect(@widget.poppedStateCallback).to.be.eql @callback
 
-  describe '#callCallbacks', ->
+  describe '#callCallback', ->
     beforeEach ->
       @stateData = {}
-
       @widget.onPopState(@callback)
-      @widget.onPopState(@secondCallback)
-      @widget.onPopState(@thirdCallback)
+      @widget.callCallback(@stateData)
 
-      @widget.callCallbacks(@stateData)
-
-    it 'calls all @poppedStateCallbacks one by one', ->
+    it 'calls @poppedStateCallback', ->
       expect(@callback).to.be.calledOnce
-      expect(@secondCallback).to.be.calledOnce
-      expect(@thirdCallback).to.be.calledOnce
-
-    it 'calls all @poppedStateCallbacks in proper order', ->
-      expect(@callback).to.be.calledBefore @secondCallback
-      expect(@secondCallback).to.be.calledBefore @thirdCallback
 
     it 'calls @poppedStateCallbacks with state data provided', ->
       expect(@callback.lastCall.args[0]).to.be.equal @stateData
-      expect(@secondCallback.lastCall.args[0]).to.be.equal @stateData
-      expect(@thirdCallback.lastCall.args[0]).to.be.equal @stateData
 
   describe '#replaceInitialState', ->
     before ->

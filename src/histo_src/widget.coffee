@@ -5,13 +5,13 @@ class Widget
   constructor: (options) ->
     return unless options.id
     @id = options.id
-    @poppedStateCallbacks = []
+    @poppedStateCallback = null
 
   onPopState: (callback) ->
-    @poppedStateCallbacks.push(callback)
+    @poppedStateCallback = callback
 
-  callCallbacks: (stateData) ->
-    callback(stateData) for callback in @poppedStateCallbacks
+  callCallback: (stateData) ->
+    @poppedStateCallback(stateData) if @poppedStateCallback?
 
   replaceInitialState: (state) ->
     Histo.supplementState(id: @id, widgetState: state)

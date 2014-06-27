@@ -50,8 +50,8 @@ describe 'Histo', ->
 
       @widget = Histo.addWidget id: 'my_widget'
       @anotherWidget = Histo.addWidget id: 'my_another_widget'
-      sinon.spy(@widget, 'callCallbacks')
-      sinon.spy(@anotherWidget, 'callCallbacks')
+      sinon.spy(@widget, 'callCallback')
+      sinon.spy(@anotherWidget, 'callCallback')
 
       @widgetState1 = value: 1
       @widgetState2 = value: 2
@@ -172,40 +172,40 @@ describe 'Histo', ->
       context 'going back through history', ->
         it 'calls poppedStateCallbacks for proper widgets with proper state data provided', ->
           Histo._history().back()
-          expect(@anotherWidget.callCallbacks).to.be.calledOnce
-          expect(@widget.callCallbacks).to.be.not.called
-          expect(@anotherWidget.callCallbacks.lastCall.args[0]).to.be.eql
+          expect(@anotherWidget.callCallback).to.be.calledOnce
+          expect(@widget.callCallback).to.be.not.called
+          expect(@anotherWidget.callCallback.lastCall.args[0]).to.be.eql
             state_id: 0
             property: 1
 
           Histo._history().back()
-          expect(@anotherWidget.callCallbacks).to.be.calledOnce
-          expect(@widget.callCallbacks).to.be.calledOnce
-          expect(@widget.callCallbacks.lastCall.args[0]).to.be.eql
+          expect(@anotherWidget.callCallback).to.be.calledOnce
+          expect(@widget.callCallback).to.be.calledOnce
+          expect(@widget.callCallback.lastCall.args[0]).to.be.eql
             state_id: 0
             value: 1
 
       context 'then going forward through history', ->
         it 'calls poppedStateCallbacks for proper widgets with proper state data provided', ->
           Histo._history().back()
-          expect(@anotherWidget.callCallbacks).to.be.calledOnce
-          expect(@widget.callCallbacks).to.be.not.called
+          expect(@anotherWidget.callCallback).to.be.calledOnce
+          expect(@widget.callCallback).to.be.not.called
 
           Histo._history().back()
-          expect(@anotherWidget.callCallbacks).to.be.calledOnce
-          expect(@widget.callCallbacks).to.be.calledOnce
+          expect(@anotherWidget.callCallback).to.be.calledOnce
+          expect(@widget.callCallback).to.be.calledOnce
 
           Histo._history().forward()
-          expect(@widget.callCallbacks).to.be.calledTwice
-          expect(@anotherWidget.callCallbacks).to.be.calledOnce
-          expect(@widget.callCallbacks.lastCall.args[0]).to.be.eql
+          expect(@widget.callCallback).to.be.calledTwice
+          expect(@anotherWidget.callCallback).to.be.calledOnce
+          expect(@widget.callCallback.lastCall.args[0]).to.be.eql
             state_id: 1
             value: 2
 
           Histo._history().forward()
-          expect(@widget.callCallbacks).to.be.calledTwice
-          expect(@anotherWidget.callCallbacks).to.be.calledTwice
-          expect(@anotherWidget.callCallbacks.lastCall.args[0]).to.be.eql
+          expect(@widget.callCallback).to.be.calledTwice
+          expect(@anotherWidget.callCallback).to.be.calledTwice
+          expect(@anotherWidget.callCallback.lastCall.args[0]).to.be.eql
             state_id: 1
             property: 2
 

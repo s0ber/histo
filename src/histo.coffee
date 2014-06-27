@@ -54,7 +54,7 @@ window.Histo = class
     widgetState = state[id]
 
     @saveCurrentState(state)
-    widget.callCallbacks(widgetState)
+    widget.callCallback(widgetState)
 
 # private
 

@@ -84,6 +84,17 @@ describe 'Histo', ->
           expectedWidgetState = _.extend({}, @widgetState2, state_id: 0)
           expect(Histo._history().state['my_widget']).to.be.eql expectedWidgetState
 
+      context 'state is popping', ->
+        it 'does nothing', ->
+          @widget.replaceInitialState(@widgetState1)
+
+          Histo.isPopping = true
+          @widget.replaceInitialState(@widgetState2)
+          Histo.isPopping = false
+
+          expectedWidgetState = _.extend({}, @widgetState1, state_id: 0)
+          expect(Histo._history().state['my_widget']).to.be.eql expectedWidgetState
+
       it 'saves new state in @currentState', ->
         @widget.replaceInitialState(@widgetState1)
         @widget.replaceInitialState(@widgetState2)
@@ -134,6 +145,12 @@ describe 'Histo', ->
         @widget.pushState('/custom_path', @widgetState2)
         @anotherWidget.replaceInitialState(@anotherWidgetState1)
         @anotherWidget.pushState('/another_path', @anotherWidgetState2)
+
+        @widget.onPopState (state, path, dfd) =>
+          dfd.resolve()
+
+        @anotherWidget.onPopState (state, path, dfd) =>
+          dfd.resolve()
 
       it 'saves popped state in @currentState', ->
         Histo._history().back()

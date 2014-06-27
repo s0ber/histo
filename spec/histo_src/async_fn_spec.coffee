@@ -82,6 +82,9 @@ describe 'AsyncFn', ->
       AsyncFn.addToCallQueue asyncFn2
       AsyncFn.addToCallQueue asyncFn3
 
+      expect(asyncFn2).to.be.not.called
+      expect(asyncFn3).to.be.not.called
+
       setTimeout ->
         expect(asyncFn1).to.be.calledOnce
         expect(asyncFn2).to.be.calledOnce

@@ -18,6 +18,7 @@ window.Histo = class
     @_currentState = _.clone(state)
 
   @supplementState: (options) ->
+    return if @isPopping
     {id, widgetState} = options
 
     state = @_history().state || {}
@@ -50,11 +51,19 @@ window.Histo = class
     id = @_getChangedWidgetId(state)
     return unless id?
 
-    widget = @widgets[id]
     widgetState = state[id]
-
+    path = location.href
     @saveCurrentState(state)
-    widget.callCallback(widgetState)
+
+    @_asyncFn().addToCallQueue =>
+      @isPopping = true
+      dfd = new $.Deferred()
+      dfd.done => @isPopping = false
+
+      widget = @widgets[id]
+      widget.callCallback(widgetState, path, dfd)
+
+      dfd.promise()
 
 # private
 
@@ -72,6 +81,9 @@ window.Histo = class
 
   @_launcher: ->
     @__launcher ?= modula.require 'histo/launcher'
+
+  @_asyncFn: ->
+    @__asyncFn ?= modula.require 'histo/async_fn'
 
   @_history: ->
     window.history

@@ -10,8 +10,8 @@ class Widget
   onPopState: (callback) ->
     @poppedStateCallback = callback
 
-  callCallback: (stateData) ->
-    @poppedStateCallback(stateData) if @poppedStateCallback?
+  callCallback: (stateData, path, dfd) ->
+    @poppedStateCallback(stateData, path, dfd) if @poppedStateCallback?
 
   replaceInitialState: (state) ->
     Histo.supplementState(id: @id, widgetState: state)

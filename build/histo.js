@@ -1,7 +1,7 @@
-/*! histo (v0.1.1),
+/*! histo (v0.1.2),
  Library, which allows different widgets to register it's own history events handlers, which won't be conflicting with each others,
  by Sergey Shishkalov <sergeyshishkalov@gmail.com>
- Sat Jun 28 2014 */
+ Sun Jul 06 2014 */
 (function() {
   var modules;
 
@@ -142,7 +142,7 @@
     };
 
     _Class._removeURIParameter = function(url, param) {
-      var i, pars, prefix, urlparts;
+      var i, newPars, pars, prefix, urlparts, _i, _ref;
       url = url.toString();
       urlparts = url.split('?');
       if (urlparts.length < 2) {
@@ -150,13 +150,14 @@
       }
       prefix = encodeURIComponent(param) + '=';
       pars = urlparts[1].split(/[&;]/g);
-      while ((i = pars.length && i--)) {
-        if (pars[i].lastIndexOf(prefix, 0) !== -1) {
-          pars.splice(i, 1);
+      newPars = [];
+      for (i = _i = 0, _ref = pars.length; 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+        if (pars[i].lastIndexOf(prefix, 0) === -1) {
+          newPars.push(pars[i]);
         }
       }
-      if (pars.length) {
-        url = urlparts[0] + '?' + pars.join('&');
+      if (newPars.length) {
+        url = urlparts[0] + '?' + newPars.join('&');
       } else {
         url = urlparts[0];
       }

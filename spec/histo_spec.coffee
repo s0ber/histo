@@ -226,3 +226,6 @@ describe 'Histo', ->
             state_id: 1
             property: 2
 
+    describe '._removeURIParameter', ->
+      path = 'http://mypath.com/page?page=1&_=1404657206685'
+      expect(Histo._removeURIParameter(path, '_')).to.be.eql 'http://mypath.com/page?page=1'

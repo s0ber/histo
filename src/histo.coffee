@@ -96,12 +96,12 @@ window.Histo = class
     prefix = encodeURIComponent(param) + '='
     pars = urlparts[1].split(/[&;]/g)
 
-    while (i = pars.length and i--)
-      if pars[i].lastIndexOf(prefix, 0) != -1
-        pars.splice(i, 1)
+    newPars = []
+    for i in [0...pars.length]
+      newPars.push pars[i] unless pars[i].lastIndexOf(prefix, 0) != -1
 
-    if pars.length
-      url = urlparts[0] + '?' + pars.join('&')
+    if newPars.length
+      url = urlparts[0] + '?' + newPars.join('&')
     else
       url = urlparts[0]
 

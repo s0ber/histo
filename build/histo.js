@@ -1,7 +1,7 @@
-/*! histo (v0.1.2),
+/*! histo (v0.1.3),
  Library, which allows different widgets to register it's own history events handlers, which won't be conflicting with each others,
  by Sergey Shishkalov <sergeyshishkalov@gmail.com>
- Sun Jul 06 2014 */
+ Tue Jul 08 2014 */
 (function() {
   var modules;
 
@@ -86,19 +86,25 @@
     };
 
     _Class.onPopState = function(state) {
-      var id, path, widgetState;
+      var dfd, id, path, widgetState, _ref;
       id = this._getChangedWidgetId(state);
       if (id == null) {
         return;
       }
+      if ((this.currentChangedId != null) && this.currentChangedId === id) {
+        if ((_ref = this.dfd) != null) {
+          _ref.reject();
+        }
+      }
+      this.currentChangedId = id;
       widgetState = state[id];
       path = location.href;
       this.saveCurrentState(state);
+      this.dfd = dfd = new $.Deferred();
       return this._asyncFn().addToCallQueue((function(_this) {
         return function() {
-          var dfd, widget;
+          var widget;
           _this.isPopping = true;
-          dfd = new $.Deferred();
           dfd.done(function() {
             return _this.isPopping = false;
           });
@@ -299,7 +305,7 @@
       if (this.isCalled) {
         return;
       }
-      return this.fn().done((function(_this) {
+      return this.fn().always((function(_this) {
         return function() {
           _this.isCalled = true;
           if (_this.callback) {

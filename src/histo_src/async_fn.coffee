@@ -20,7 +20,7 @@ class AsyncFn
 
   call: ->
     return if @isCalled
-    @fn().done =>
+    @fn().always =>
       @isCalled = true
       @callback() if @callback
 

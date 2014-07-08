@@ -51,13 +51,16 @@ window.Histo = class
     id = @_getChangedWidgetId(state)
     return unless id?
 
+    @dfd?.reject() if @currentChangedId? and @currentChangedId is id
+    @currentChangedId = id
+
     widgetState = state[id]
     path = location.href
     @saveCurrentState(state)
 
+    @dfd = dfd = new $.Deferred()
     @_asyncFn().addToCallQueue =>
       @isPopping = true
-      dfd = new $.Deferred()
       dfd.done => @isPopping = false
 
       widget = @widgets[id]

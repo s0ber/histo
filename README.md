@@ -105,5 +105,5 @@ class PjaxWidget
 
 ## Example App
 
-http://young-bastion-3622.herokuapp.com/ — example of using this widget,
-https://github.com/s0ber/history_app — code for the example app above.
+- http://young-bastion-3622.herokuapp.com/ — example of using this widget,
+- https://github.com/s0ber/history_app — code for the example app above.

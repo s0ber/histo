@@ -78,7 +78,9 @@ class PjaxWidget
       # when state is rejected, we are aborting current ajax request,
       # and then this callback will be called for the next state
       dfd.fail @abortCurrentRequest.bind(@)
-      @loadPage(path).done(@renderPage.bind(@))
+      @loadPage(path)
+        .done(@renderPage.bind(@))
+        .done => dfd.resolve()
 
   setInitialState: ->
     @historyWidget.replaceInitialState {}

@@ -74,7 +74,7 @@ class PjaxWidget
     $('a').click(@renderNewPage.bind(@))
 
   setPoppedStateProcessing: ->
-    @historyWidget.onPopState (state, path, dfd) ->
+    @historyWidget.onPopState (state, path, dfd) =>
       # when state is rejected, we are aborting current ajax request,
       # and then this callback will be called for the next state
       dfd.fail @abortCurrentRequest.bind(@)

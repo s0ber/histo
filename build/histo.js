@@ -1,7 +1,7 @@
-/*! histo (v0.1.3),
+/*! histo (v0.1.4),
  Library, which allows different widgets to register it's own history events handlers, which won't be conflicting with each others,
  by Sergey Shishkalov <sergeyshishkalov@gmail.com>
- Tue Jul 08 2014 */
+ Sat Aug 23 2014 */
 (function() {
   var modules;
 
@@ -140,7 +140,7 @@
     };
 
     _Class._asyncFn = function() {
-      return this.__asyncFn != null ? this.__asyncFn : this.__asyncFn = modula.require('histo/async_fn');
+      return this.__asyncFn != null ? this.__asyncFn : this.__asyncFn = window.AsyncFn;
     };
 
     _Class._history = function() {
@@ -268,57 +268,5 @@
   })();
 
   modula["export"]('histo/widget', Widget);
-
-}).call(this);
-
-(function() {
-  var AsyncFn;
-
-  AsyncFn = (function() {
-    AsyncFn.addToCallQueue = function(fn) {
-      var asyncFn;
-      asyncFn = new AsyncFn(fn);
-      if (this.currentFn != null) {
-        this.currentFn.done((function(_this) {
-          return function() {
-            return asyncFn.call();
-          };
-        })(this));
-      } else {
-        asyncFn.call();
-      }
-      return this.currentFn = asyncFn;
-    };
-
-    function AsyncFn(asyncFn) {
-      this.fn = asyncFn;
-    }
-
-    AsyncFn.prototype.done = function(callback) {
-      this.callback = callback;
-      if (this.isCalled) {
-        return this.callback();
-      }
-    };
-
-    AsyncFn.prototype.call = function() {
-      if (this.isCalled) {
-        return;
-      }
-      return this.fn().always((function(_this) {
-        return function() {
-          _this.isCalled = true;
-          if (_this.callback) {
-            return _this.callback();
-          }
-        };
-      })(this));
-    };
-
-    return AsyncFn;
-
-  })();
-
-  modula["export"]('histo/async_fn', AsyncFn);
 
 }).call(this);

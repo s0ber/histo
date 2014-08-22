@@ -19,7 +19,6 @@ sourceFiles = [
   'src/histo.coffee'
   'src/histo_src/launcher.coffee'
   'src/histo_src/widget.coffee'
-  'src/histo_src/async_fn.coffee'
 ]
 
 gulp.task 'build', ['karma:release'], ->

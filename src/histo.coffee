@@ -86,7 +86,7 @@ window.Histo = class
     @__launcher ?= modula.require 'histo/launcher'
 
   @_asyncFn: ->
-    @__asyncFn ?= modula.require 'histo/async_fn'
+    @__asyncFn ?= window.AsyncFn
 
   @_history: ->
     window.history

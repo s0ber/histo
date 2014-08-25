@@ -1,7 +1,7 @@
-/*! histo (v0.1.4),
+/*! histo (v0.1.5),
  Library, which allows different widgets to register it's own history events handlers, which won't be conflicting with each others,
  by Sergey Shishkalov <sergeyshishkalov@gmail.com>
- Sat Aug 23 2014 */
+ Mon Aug 25 2014 */
 (function() {
   var modules;
 

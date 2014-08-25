@@ -1,6 +1,6 @@
 {
   "name": "histo",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "homepage": "https://github.com/s0ber/histo",
   "authors": [
     "Sergey Shishkalov <sergeyshishkalov@gmail.com>"
@@ -11,7 +11,7 @@
   "dependencies": {
     "jquery": "",
     "underscore": "",
-    "async_fn": "0.1.0"
+    "async_fn": "~>0.1.1"
   },
 
   "license": "MIT",

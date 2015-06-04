@@ -27,7 +27,7 @@ describe 'Widget', ->
     it 'calls @poppedStateCallbacks with state data provided', ->
       expect(@callback.lastCall.args[0]).to.be.equal @stateData
 
-  describe '#replaceInitialState', ->
+  describe '#replaceState', ->
     beforeEach ->
       sinon.spy(Histo, 'supplementState')
 
@@ -36,7 +36,7 @@ describe 'Widget', ->
 
     it 'calls Histo.supplementState with state data, id, and path provided', ->
       state = value: 1
-      @widget.replaceInitialState(state)
+      @widget.replaceState(state)
       expect(Histo.supplementState).to.be.calledOnce
       expect(Histo.supplementState.lastCall.args[0]).to.be.eql
         id: 'my_widget'
@@ -45,12 +45,20 @@ describe 'Widget', ->
 
     it 'replaces current state with custom path if provided', ->
       state = value: 1
-      @widget.replaceInitialState(state, '/ololo')
+      @widget.replaceState(state, '/ololo')
       expect(Histo.supplementState).to.be.calledOnce
       expect(Histo.supplementState.lastCall.args[0]).to.be.eql
         id: 'my_widget'
         widgetState: state
         path: '/ololo'
+
+  describe '#replaceInitialState', ->
+    it 'behaves the same as #replaceState', ->
+      sinon.spy(@widget, 'replaceState')
+      args = [value: 1, '/ololo']
+      @widget.replaceInitialState(args...)
+      expect(@widget.replaceState.withArgs(args...)).to.be.calledOnce
+      @widget.replaceState.restore()
 
   describe '#pushState', ->
     before ->

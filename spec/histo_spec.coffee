@@ -95,6 +95,36 @@ describe 'Histo', ->
           expectedWidgetState = _.extend({}, @widgetState1, state_id: 0)
           expect(Histo._history().state['my_widget']).to.be.eql expectedWidgetState
 
+      context 'path was provided in options', ->
+        it 'replaces state with provided path', ->
+          sinon.spy(Histo._history(), 'replaceState')
+
+          expectedWidgetState = _.extend({}, @widgetState1, state_id: 0)
+          @widget.replaceInitialState(@widgetState1, '/custom_path')
+
+          expect(Histo._history().replaceState.withArgs(
+            my_widget: expectedWidgetState,
+            null,
+            '/custom_path'
+          )).to.be.calledOnce
+
+          expectedMyAnotherWidgetState = _.extend({}, @anotherWidgetState1, state_id: 0)
+          @anotherWidget.replaceInitialState(@anotherWidgetState1)
+
+          expect(Histo._history().replaceState.withArgs(
+            my_widget: expectedWidgetState,
+            my_another_widget: expectedMyAnotherWidgetState,
+            null,
+            '/custom_path'
+          )).to.be.calledOnce
+
+      context 'path was not provided in options', ->
+        it 'replaces state with current path', ->
+          sinon.spy(Histo._history(), 'replaceState')
+          @widget.replaceInitialState(@widgetState1)
+          expectedWidgetState = _.extend({}, @widgetState1, state_id: 0)
+          expect(Histo._history().replaceState.withArgs(my_widget: expectedWidgetState, null, location.href)).to.be.calledOnce
+
       it 'saves new state in @currentState', ->
         @widget.replaceInitialState(@widgetState1)
         @widget.replaceInitialState(@widgetState2)

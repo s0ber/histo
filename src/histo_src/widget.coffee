@@ -13,8 +13,8 @@ class Widget
   callCallback: (stateData, path, dfd) ->
     @poppedStateCallback(stateData, path, dfd) if @poppedStateCallback?
 
-  replaceInitialState: (state) ->
-    Histo.supplementState(id: @id, widgetState: state)
+  replaceInitialState: (state, path = location.href) ->
+    Histo.supplementState(id: @id, widgetState: state, path: path)
 
   pushState: (path, state) ->
     Histo.pushNewState(path, id: @id, widgetState: state)

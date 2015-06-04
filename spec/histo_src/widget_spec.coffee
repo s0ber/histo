@@ -28,19 +28,29 @@ describe 'Widget', ->
       expect(@callback.lastCall.args[0]).to.be.equal @stateData
 
   describe '#replaceInitialState', ->
-    before ->
+    beforeEach ->
       sinon.spy(Histo, 'supplementState')
 
-    after ->
+    afterEach ->
       Histo.supplementState.restore()
 
-    it 'calls Histo.supplementState with state data and id provided', ->
+    it 'calls Histo.supplementState with state data, id, and path provided', ->
       state = value: 1
       @widget.replaceInitialState(state)
       expect(Histo.supplementState).to.be.calledOnce
       expect(Histo.supplementState.lastCall.args[0]).to.be.eql
         id: 'my_widget'
         widgetState: state
+        path: location.href
+
+    it 'replaces current state with custom path if provided', ->
+      state = value: 1
+      @widget.replaceInitialState(state, '/ololo')
+      expect(Histo.supplementState).to.be.calledOnce
+      expect(Histo.supplementState.lastCall.args[0]).to.be.eql
+        id: 'my_widget'
+        widgetState: state
+        path: '/ololo'
 
   describe '#pushState', ->
     before ->

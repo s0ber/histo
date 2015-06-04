@@ -29,7 +29,8 @@ window.Histo = class
         0
 
     state[id] = widgetState
-    @_history().replaceState(state, null, location.href)
+    path = options.path or location.href
+    @_history().replaceState(state, null, path)
     @saveCurrentState(state)
 
   @pushNewState: (path, options) ->

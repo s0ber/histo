@@ -1,7 +1,7 @@
-/*! histo (v0.1.5),
+/*! histo (v0.1.6),
  Library, which allows different widgets to register it's own history events handlers, which won't be conflicting with each others,
  by Sergey Shishkalov <sergeyshishkalov@gmail.com>
- Mon Aug 25 2014 */
+ Thu Jun 04 2015 */
 (function() {
   var modules;
 
@@ -61,7 +61,7 @@
     };
 
     _Class.supplementState = function(options) {
-      var curStateId, id, state, widgetState, _ref;
+      var curStateId, id, path, state, widgetState, _ref;
       if (this.isPopping) {
         return;
       }
@@ -69,7 +69,8 @@
       state = this._history().state || {};
       widgetState.state_id = (curStateId = (_ref = state[id]) != null ? _ref.state_id : void 0) != null ? curStateId : 0;
       state[id] = widgetState;
-      this._history().replaceState(state, null, location.href);
+      path = options.path || location.href;
+      this._history().replaceState(state, null, path);
       return this.saveCurrentState(state);
     };
 
@@ -249,10 +250,21 @@
       }
     };
 
-    Widget.prototype.replaceInitialState = function(state) {
+    Widget.prototype.replaceInitialState = function(state, path) {
+      if (path == null) {
+        path = location.href;
+      }
+      return this.replaceState(state, path);
+    };
+
+    Widget.prototype.replaceState = function(state, path) {
+      if (path == null) {
+        path = location.href;
+      }
       return Histo.supplementState({
         id: this.id,
-        widgetState: state
+        widgetState: state,
+        path: path
       });
     };
 

@@ -8,6 +8,7 @@ Launcher = class
     @_fakeStatePopped = false
     @_initialUrl = location.href
     window.onpopstate = _.bind(@_popState, @)
+    window.onhashchange = _.bind(@_addCurrentStateOnHashChange, @)
     Histo.saveInitialStateAsCurrent()
 
   @unload: ->
@@ -15,6 +16,7 @@ Launcher = class
 
     @_fakeStatePopped = false
     window.onpopstate = null
+    window.onhashchange = null
 
   @isInitialized: ->
     @_isInitialized
@@ -30,5 +32,8 @@ Launcher = class
     @_fakeStatePopped = true
 
     Histo.onPopState(e?.state)
+
+  @_addCurrentStateOnHashChange: ->
+    Histo.replaceStateWithCurrent()
 
 modula.export('histo/launcher', Launcher)

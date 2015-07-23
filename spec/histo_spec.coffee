@@ -58,6 +58,21 @@ describe 'Histo', ->
       @anotherWidgetState1 = property: 1
       @anotherWidgetState2 = property: 2
 
+    describe '.replaceStateWithCurrent', ->
+      context 'global state is presented', ->
+        it "doesn't touch global state", ->
+          Histo._history().state = value: 0
+          Histo.saveCurrentState(value: 1)
+          Histo.replaceStateWithCurrent()
+          expect(Histo._history().state).to.be.eql(value: 0)
+
+      context 'global state is empty', ->
+        it 'replaces global state with current state', ->
+          Histo._history().state = null
+          Histo.saveCurrentState(value: 1)
+          Histo.replaceStateWithCurrent()
+          expect(Histo._history().state).to.be.eql(Histo.currentState())
+
     describe '.supplementState', ->
       context 'there is no current history state', ->
         it 'saves provided widget state with state_id equal to 0', ->

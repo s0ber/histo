@@ -25,6 +25,11 @@ describe 'Launcher', ->
       expect(Histo.saveInitialStateAsCurrent).to.be.calledOnce
       Histo.saveInitialStateAsCurrent.restore()
 
+    it 'binds global window.onhashchange handler', ->
+      expect(window.onhashchange).to.be.null
+      Launcher.initialize()
+      expect(window.onhashchange).to.be.instanceof Function
+
   describe '.unload', ->
     it 'sets @_isInitialized as false', ->
       Launcher.initialize()
@@ -35,6 +40,11 @@ describe 'Launcher', ->
       Launcher.initialize()
       Launcher.unload()
       expect(window.onpopstate).to.be.null
+
+    it 'unbinds global window.onpopstate handler', ->
+      Launcher.initialize()
+      Launcher.unload()
+      expect(window.onhashchange).to.be.null
 
   describe '.onBeforePushState', ->
     before ->
@@ -68,3 +78,9 @@ describe 'Launcher', ->
       Launcher._popState()
       expect(Histo.onPopState).to.be.calledOnce
 
+  describe '._addCurrentStateOnHashChange', ->
+    it 'saves current state as a global state', ->
+      sinon.spy(Histo, 'replaceStateWithCurrent')
+      Launcher._addCurrentStateOnHashChange()
+      expect(Histo.replaceStateWithCurrent).to.be.calledOnce
+      Histo.replaceStateWithCurrent.restore()

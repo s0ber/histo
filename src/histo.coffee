@@ -33,6 +33,9 @@ window.Histo = class
     @_history().replaceState(state, null, path)
     @saveCurrentState(state)
 
+  @replaceStateWithCurrent: ->
+    @_history().replaceState(@currentState(), null, location.href) unless @_history().state?
+
   @pushNewState: (path, options) ->
     @_launcher().onBeforePushState()
 

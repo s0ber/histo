@@ -1,16 +1,12 @@
-Histo = modula.require 'histo'
-Launcher = modula.require 'histo/launcher'
+Histo = require '../src/histo'
+FakeHistoryApi = require './stubs/fake_history_api'
+_ = require 'underscore'
 
 describe 'Histo', ->
   originalHistory = Histo._history()
 
-  before ->
-    sinon.spy(Launcher, 'initialize')
-
   after ->
-    Launcher.initialize.restore()
-    Histo._history = ->
-      originalHistory
+    Histo._history = -> originalHistory
 
   beforeEach ->
     Histo.widgets = {}
@@ -18,23 +14,68 @@ describe 'Histo', ->
 
   afterEach ->
     Histo.widgets = {}
+    Histo.unload()
 
   describe '.addWidget', ->
+    beforeEach ->
+      sinon.spy(Histo, 'initialize')
+
+    afterEach ->
+      Histo.initialize.restore()
+
     it 'returns new widget instance', ->
       widget = Histo.addWidget id: 'my_widget'
       expect(widget.constructor).to.match /Widget/
 
     it 'initializes Histo when called at first time', ->
       Histo.addWidget id: 'my_widget'
-      expect(Launcher.initialize).to.be.calledOnce
+      expect(Histo.initialize).to.be.calledOnce
 
     it "doesn't initializes Histo when called another time", ->
+      Histo.addWidget id: 'my_widget'
       Histo.addWidget id: 'my_another_widget'
-      expect(Launcher.initialize).to.be.calledOnce
+      expect(Histo.initialize).to.be.calledOnce
 
     it 'saves reference to created widget in @_widgets', ->
       widget = Histo.addWidget id: 'my_widget'
       expect(Histo.widgets['my_widget']).to.be.equal widget
+
+  describe '.initialize', ->
+    it 'sets @_isInitialized as true', ->
+      Histo.initialize()
+      expect(Histo.isInitialized()).to.be.true
+
+    it 'binds global window.onpopstate handler', ->
+      expect(window.onpopstate).to.be.null
+      Histo.initialize()
+      expect(window.onpopstate).to.be.instanceof Function
+
+    it 'calls @saveInitialStateAsCurrent', ->
+      sinon.spy(Histo, 'saveInitialStateAsCurrent')
+      Histo.initialize()
+      expect(Histo.saveInitialStateAsCurrent).to.be.calledOnce
+      Histo.saveInitialStateAsCurrent.restore()
+
+    it 'binds global window.onhashchange handler', ->
+      expect(window.onhashchange).to.be.null
+      Histo.initialize(Histo)
+      expect(window.onhashchange).to.be.instanceof Function
+
+  describe '.unload', ->
+    it 'sets @_isInitialized as false', ->
+      Histo.initialize()
+      Histo.unload()
+      expect(Histo.isInitialized()).to.be.false
+
+    it 'unbinds global window.onpopstate handler', ->
+      Histo.initialize()
+      Histo.unload()
+      expect(window.onpopstate).to.be.null
+
+    it 'unbinds global window.onpopstate handler', ->
+      Histo.initialize()
+      Histo.unload()
+      expect(window.onhashchange).to.be.null
 
   describe '.saveCurrentState', ->
     it 'clones provided "state" object in @_currentState', ->
@@ -184,7 +225,12 @@ describe 'Histo', ->
             state_id: 1
             property: 2
 
-    describe '.popState', ->
+      it 'sets @_fakeStatePopped as true', ->
+        @widget.replaceInitialState(@widgetState1)
+        @widget.pushState('/custom_path', @widgetState2)
+        expect(Histo._fakeStatePopped).to.be.true
+
+    describe '._popState', ->
       beforeEach ->
         @widget.replaceInitialState(@widgetState1)
         @widget.pushState('/custom_path', @widgetState2)
@@ -272,5 +318,6 @@ describe 'Histo', ->
             property: 2
 
     describe '._removeURIParameter', ->
-      path = 'http://mypath.com/page?page=1&_=1404657206685'
-      expect(Histo._removeURIParameter(path, '_')).to.be.eql 'http://mypath.com/page?page=1'
+      it 'removes uri parameter', ->
+        path = 'http://mypath.com/page?page=1&_=1404657206685'
+        expect(Histo._removeURIParameter(path, '_')).to.be.eql 'http://mypath.com/page?page=1'

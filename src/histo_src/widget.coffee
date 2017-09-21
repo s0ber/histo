@@ -1,8 +1,6 @@
-Histo = modula.require 'histo'
+module.exports = class Widget
 
-class Widget
-
-  constructor: (options) ->
+  constructor: (@Histo, options) ->
     return unless options.id
     @id = options.id
     @poppedStateCallback = null
@@ -17,9 +15,7 @@ class Widget
     @replaceState(state, path)
 
   replaceState: (state, path = location.href) ->
-    Histo.supplementState(id: @id, widgetState: state, path: path)
+    @Histo.supplementState(id: @id, widgetState: state, path: path)
 
   pushState: (path, state) ->
-    Histo.pushNewState(path, id: @id, widgetState: state)
-
-modula.export('histo/widget', Widget)
+    @Histo.pushNewState(path, id: @id, widgetState: state)

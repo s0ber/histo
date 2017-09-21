@@ -1,12 +1,33 @@
-window.Histo = class
+Widget = require './histo_src/widget'
+AsyncFn = require 'async_fn'
+$ = require 'jquery'
+
+module.exports = class Histo
 
   @addWidget: (options = {}) ->
-    @_launcher().initialize() unless @_launcher().isInitialized()
-    Widget = modula.require 'histo/widget'
-    widget = new Widget(options)
+    @initialize() unless @isInitialized()
+    widget = new Widget(Histo, options)
 
     @widgets ?= {}
     @widgets[widget.id] = widget
+
+  @initialize: ->
+    @_isInitialized = true
+
+    @_fakeStatePopped = false
+    @_initialUrl = location.href
+    window.onpopstate = (e) => @_popState(e?.state)
+    window.onhashchange = => @replaceStateWithCurrent()
+    @saveInitialStateAsCurrent()
+
+  @unload: ->
+    @_isInitialized = false
+
+    @_fakeStatePopped = false
+    window.onpopstate = null
+    window.onhashchange = null
+
+  @isInitialized: -> @_isInitialized
 
   @saveInitialStateAsCurrent: ->
     @saveCurrentState(window.location.state || {})
@@ -15,7 +36,7 @@ window.Histo = class
     @_currentState
 
   @saveCurrentState: (state) ->
-    @_currentState = _.clone(state)
+    @_currentState = JSON.parse(JSON.stringify(state))
 
   @supplementState: (options) ->
     return if @isPopping
@@ -37,7 +58,7 @@ window.Histo = class
     @_history().replaceState(@currentState(), null, location.href) unless @_history().state?
 
   @pushNewState: (path, options) ->
-    @_launcher().onBeforePushState()
+    @_fakeStatePopped = true
 
     {id, widgetState} = options
     widgetState.state_id = @currentState()[id].state_id + 1
@@ -50,27 +71,6 @@ window.Histo = class
 
     @_history().pushState(state, null, path)
     @saveCurrentState(state)
-
-  @onPopState: (state) ->
-    id = @_getChangedWidgetId(state)
-    return unless id?
-
-    @dfd?.reject() if @currentChangedId? and @currentChangedId is id
-    @currentChangedId = id
-
-    widgetState = state[id]
-    path = location.href
-    @saveCurrentState(state)
-
-    @dfd = dfd = new $.Deferred()
-    @_asyncFn().addToCallQueue =>
-      @isPopping = true
-      dfd.done => @isPopping = false
-
-      widget = @widgets[id]
-      widget.callCallback(widgetState, path, dfd)
-
-      dfd.promise()
 
 # private
 
@@ -86,14 +86,10 @@ window.Histo = class
 
     changedId
 
-  @_launcher: ->
-    @__launcher ?= modula.require 'histo/launcher'
-
   @_asyncFn: ->
-    @__asyncFn ?= window.AsyncFn
+    @__asyncFn ?= AsyncFn
 
-  @_history: ->
-    window.history
+  @_history: -> window.history
 
   @_removeURIParameter: (url, param) ->
     url = url.toString()
@@ -114,4 +110,29 @@ window.Histo = class
 
     url
 
-modula.export('histo', Histo)
+  @_popState: (state) ->
+    # workaround for fake popped states
+    if location.href is @_initialUrl and not @_fakeStatePopped
+      @_fakeStatePopped = true
+      return
+    @_fakeStatePopped = true
+
+    id = @_getChangedWidgetId(state)
+    return unless id?
+
+    @dfd?.reject() if @currentChangedId? and @currentChangedId is id
+    @currentChangedId = id
+
+    widgetState = state[id]
+    path = location.href
+    @saveCurrentState(state)
+
+    @dfd = dfd = new $.Deferred()
+    @_asyncFn().addToCallQueue =>
+      @isPopping = true
+      dfd.done => @isPopping = false
+
+      widget = @widgets[id]
+      widget.callCallback(widgetState, path, dfd)
+
+      dfd.promise()

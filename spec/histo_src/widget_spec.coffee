@@ -1,9 +1,9 @@
-Widget = modula.require 'histo/widget'
+Widget = require '../../src/histo_src/widget'
+Histo = require '../../src/histo'
 
 describe 'Widget', ->
-
   beforeEach ->
-    @widget = new Widget id: 'my_widget'
+    @widget = new Widget(Histo, id: 'my_widget')
     @callback = sinon.spy()
 
   describe '#contructor', ->
@@ -77,4 +77,3 @@ describe 'Widget', ->
       expect(Histo.pushNewState.lastCall.args[1]).to.be.eql
         id: 'my_widget'
         widgetState: state
-

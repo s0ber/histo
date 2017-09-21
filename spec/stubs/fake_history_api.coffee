@@ -1,4 +1,4 @@
-@FakeHistoryApi = class
+module.exports = class FakeHistoryApi
   constructor: ->
     @curPos = 0
     @maxPos = 0
@@ -31,4 +31,3 @@
     @curPos++
     @state = @curState()
     window.onpopstate state: @curState()
-

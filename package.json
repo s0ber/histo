@@ -1,42 +1,45 @@
 {
   "name": "histo_js",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "author": "Sergey Shishkalov <sergeyshishkalov@gmail.com>",
   "description": "Library, which allows different widgets to register it's own history events handlers, which won't be conflicting with each others",
+  "main": "build/histo.min.js",
   "devDependencies": {
-    "coffee-script": "~1.7.1",
-    "mocha": "~1.18.2",
-    "chai": "~1.9.1",
-    "sinon": "~1.9.1",
-    "sinon-chai": "~2.5.0",
-    "karma": "~0.12.16",
-    "karma-cli": "~0.0.4",
-    "karma-html2js-preprocessor": "~0.1.0",
-    "karma-coffee-preprocessor": "~0.2.1",
-    "karma-phantomjs-launcher": "~0.1.4",
-    "karma-mocha": "~0.1.3",
-    "karma-chai": "~0.1.0",
-    "karma-sinon-chai": "~0.1.5",
-
-    "gulp": "~3.6.2",
-    "gulp-util": "~2.2.14",
-    "gulp-coffee": "~1.4.3",
-    "gulp-concat": "~2.2.0",
-    "gulp-uglify": "~0.3.0",
-    "gulp-header": "~1.0.2",
-    "gulp-rename": "~1.2.0",
-    "gulp-karma": "git://github.com/s0ber/gulp-karma.git#ignore_gulp_src_files",
-    "coffeegulp": "~0.0.4"
+    "chai": "^3.5.0",
+    "coffee-loader": "^0.8.0",
+    "coffeescript": "^1.10.0",
+    "jquery": "^2.2.0",
+    "karma": "^0.13.22",
+    "karma-chai": "^0.1.0",
+    "karma-cli": "^0.1.2",
+    "karma-mocha": "^0.2.2",
+    "karma-mocha-reporter": "^2.2.4",
+    "karma-phantomjs-launcher": "^1.0.0",
+    "karma-sinon-chai": "^1.2.0",
+    "karma-webpack": "^2.0.4",
+    "mocha": "^2.4.5",
+    "sinon": "^1.17.3",
+    "sinon-chai": "^2.8.0",
+    "underscore": "^1.8.3",
+    "unminified-webpack-plugin": "^1.2.0",
+    "webpack": "^2.7.0"
   },
   "engine": {
     "node": ">= 0.10"
   },
   "scripts": {
-    "test": "gulp --require coffee-script/register karma:ci"
+    "build": "env NODE_ENV=production webpack",
+    "test": "karma start"
   },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "http://github.com/npm/npm.git"
+    "url": "http://github.com/s0ber/histo.git"
+  },
+  "dependencies": {
+    "async_fn": "^0.2.2"
+  },
+  "peerDependencies": {
+    "jquery": "^2.2.0"
   }
 }

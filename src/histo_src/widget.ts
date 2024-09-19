@@ -1,38 +1,44 @@
-/*
- * decaffeinate suggestions:
- * DS102: Remove unnecessary code created because of implicit returns
- * DS207: Consider shorter variations of null checks
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
-let Widget;
-module.exports = (Widget = class Widget {
+import Histo from '../index'
 
-  constructor(Histo, options) {
-    this.Histo = Histo;
-    if (!options.id) { return; }
-    this.id = options.id;
-    this.poppedStateCallback = null;
+export type WidgetState = { state_id?: number } & { [key: string]: any }
+
+type AbortHandler = () => void
+export type PoppedStateCallback = (
+  stateData: WidgetState,
+  path: string,
+  resolve: () => void,
+  handleAbort: (fn: AbortHandler) => void
+) => void
+
+export default class Widget {
+  id: string
+  poppedStateCallback?: PoppedStateCallback
+
+  constructor(options: { id: string }) {
+    if (!options.id) return
+
+    this.id = options.id
   }
 
-  onPopState(callback) {
-    return this.poppedStateCallback = callback;
+  onPopState(callback: PoppedStateCallback) {
+    this.poppedStateCallback = callback
   }
 
-  callCallback(stateData, path, dfd) {
-    if (this.poppedStateCallback != null) { return this.poppedStateCallback(stateData, path, dfd); }
+  callCallback(...args: Parameters<PoppedStateCallback>) {
+    this.poppedStateCallback?.(...args)
   }
 
-  replaceInitialState(state, path) {
-    if (path == null) { path = location.href; }
-    return this.replaceState(state, path);
+  replaceInitialState(state: WidgetState, path: string) {
+    if (path == null) { path = location.href }
+    this.replaceState(state, path)
   }
 
-  replaceState(state, path) {
-    if (path == null) { path = location.href; }
-    return this.Histo.supplementState({id: this.id, widgetState: state, path});
+  replaceState(state: WidgetState, path: string) {
+    if (path == null) { path = location.href }
+    Histo.supplementState({ id: this.id, widgetState: state, path })
   }
 
-  pushState(path, state) {
-    return this.Histo.pushNewState(path, {id: this.id, widgetState: state});
+  pushState(path: string, state: WidgetState) {
+    Histo.pushNewState(path, { id: this.id, widgetState: state })
   }
-});
+}

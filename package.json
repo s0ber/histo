@@ -1,6 +1,6 @@
 {
   "name": "histo_js",
-  "version": "1.0.0-rc1",
+  "version": "1.0.0-rc3",
   "author": "Sergey Shishkalov <sergeyshishkalov@gmail.com>",
   "description": "Library, which allows different widgets to register it's own history events handlers, which won't be conflicting with each others",
   "type": "module",
@@ -23,14 +23,15 @@
     "vite-plugin-dts": "^4.2.1"
   },
   "dependencies": {
-    "async_fn": "1.0.0-rc6"
+    "async_fn": "1.0.0-rc7"
   },
+  "browserslist": ["defaults"],
   "engine": {
     "node": ">=20"
   },
   "scripts": {
     "build": "vite build",
-    "prepublishOnly": "npm run typecheck",
+    "prepublishOnly": "npm run typecheck && npm run build",
     "test": "jest",
     "typecheck": "tsc"
   },

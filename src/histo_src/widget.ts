@@ -7,7 +7,8 @@ export type PoppedStateCallback = (
   stateData: WidgetState,
   path: string,
   resolve: () => void,
-  handleAbort: (fn: AbortHandler) => void
+  handleAbort: (fn: AbortHandler) => void,
+  direction: 'forward' | 'back'
 ) => void
 
 export default class Widget {

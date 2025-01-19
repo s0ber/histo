@@ -29,7 +29,7 @@ describe('Widget', () => {
     beforeEach(() => {
       stateData = {}
       widget.onPopState(callback)
-      widget.callCallback(stateData, '', () => {}, () => {})
+      widget.callCallback(stateData, '', () => {}, () => {}, 'forward')
     })
 
     it('calls @poppedStateCallback', () => {

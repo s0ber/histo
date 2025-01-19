@@ -152,6 +152,8 @@ export default class Histo {
     this.currentChangedId = id
 
     const widgetState = state[id]
+    const prevWidgetState = this.currentState[id]
+    const direction = prevWidgetState.state_id < widgetState.state_id ? 'forward' : 'back'
     const path = location.href
     this.saveCurrentState(state)
 
@@ -163,7 +165,7 @@ export default class Histo {
       return new Promise<void>((resolve, reject) => {
         this.abortCurrentWidget = reject
 
-        this.widgets[id].callCallback(widgetState, path, resolve, handleAbort)
+        this.widgets[id].callCallback(widgetState, path, resolve, handleAbort, direction)
       }).then(() => {
         this.isPopping = false
       }, () => {

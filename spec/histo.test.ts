@@ -350,7 +350,7 @@ describe('Histo', () => {
             expect(anotherWidget.callCallback).toHaveBeenCalledWith({
               state_id: 0,
               property: 1
-            }, expect.any(String), expect.any(Function), expect.any(Function))
+            }, expect.any(String), expect.any(Function), expect.any(Function), 'back')
           })
 
           Histo.history.back()
@@ -360,7 +360,7 @@ describe('Histo', () => {
             expect(widget.callCallback).toHaveBeenCalledWith({
               state_id: 0,
               value: 1
-            }, expect.any(String), expect.any(Function), expect.any(Function))
+            }, expect.any(String), expect.any(Function), expect.any(Function), 'back')
 
             done()
           })
@@ -388,7 +388,7 @@ describe('Histo', () => {
             expect(widget.callCallback).toHaveBeenNthCalledWith(2, {
               state_id: 1,
               value: 2
-            }, expect.any(String), expect.any(Function), expect.any(Function))
+            }, expect.any(String), expect.any(Function), expect.any(Function), 'forward')
           })
 
           Histo.history.forward()
@@ -398,7 +398,7 @@ describe('Histo', () => {
             expect(anotherWidget.callCallback).toHaveBeenNthCalledWith(2, {
               state_id: 1,
               property: 2
-            }, expect.any(String), expect.any(Function), expect.any(Function))
+            }, expect.any(String), expect.any(Function), expect.any(Function), 'forward')
 
             done()
           })

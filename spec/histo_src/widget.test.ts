@@ -37,7 +37,7 @@ describe('Widget', () => {
     })
 
     it('calls @poppedStateCallbacks with state data provided', () => {
-      expect(callback).toHaveBeenCalledWith(stateData, '', expect.any(Function), expect.any(Function))
+      expect(callback).toHaveBeenCalledWith(stateData, '', expect.any(Function), expect.any(Function), 'forward')
     })
   })
 
